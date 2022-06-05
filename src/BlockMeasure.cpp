@@ -147,17 +147,20 @@ void BlockMeasure::Filter() {
  * @brief 对图片进行亚像素精度的1D测量
  */
 void BlockMeasure::Measure() {
-  int StripeIndex = 0;  // 图片序号 从0-7，一共处理8张图片
+  int StripeIndex = 0;  // Stripe index, from 0 to 7. There are 8 in total.
+  // subPixel是一个存储了4个vector的数组，每个vector分别存储了上下左右四个边的ROI中边缘的坐标
+  // PresubPixel记录上个条纹的右侧边缘， 用于计算条纹间隔。
   std::vector<cv::Point2d> subPixel[4], PresubPixel;
-  cv::Mat ROI;
+  cv::Mat ROI;  // region of interest
   std::vector<double> stripes_width, gaps_width;
   for (; StripeIndex < 8; StripeIndex++) {
     for (int k = 0; k < 4; k++) {
       subPixel[k].clear();
       // 把ROI截取出来
-      selectROI(this->img, ROI, ROIdef[StripeIndex][2 * k],
-                ROIdef[StripeIndex][2 * k + 1]);
+      selectROI(this->img, ROI, ROIdef[StripeIndex][2 * k], ROIdef[StripeIndex][2 * k + 1]);
+      // 在ROI中进行亚像素级边缘提取
       extractSubPixel(ROI, subPixel[k], 30, k < 2, !(k & 1), SampleAmount, kSize);
+      // 将边缘相对于ROI的坐标变换到相对于整幅图的坐标。
       for (int cnt = 0; cnt < subPixel[k].size(); cnt++) {
         subPixel[k].at(cnt).x += ROIdef[StripeIndex][2 * k].x;
         subPixel[k].at(cnt).y += ROIdef[StripeIndex][2 * k].y;
@@ -195,20 +198,23 @@ void BlockMeasure::Measure() {
 void BlockMeasure::Display() {
   char buffer[64];
   memset(buffer, 0, sizeof(buffer));
-  sprintf(buffer, "stripe width = %.2f, gap width = %.2f, time usage = %.2lf", this->stripe_width, this->gap_width, this->time);
+  sprintf(buffer, "stripe width = %.2f, gap width = %.2f, time usage = %.2lfms", this->stripe_width, this->gap_width,
+          this->time);
   std::cout << buffer << std::endl;
   cv::putText(this->img_origin, buffer,
               cv::Point(this->img_origin.cols / 20, this->img_origin.rows / 15 + 40),
-              cv::FONT_HERSHEY_COMPLEX, 0.7, cv::Scalar(72, 73, 220), 2,
+              cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(72, 73, 220), 2,
               cv::LINE_AA);
 
 
   memset(buffer, 0, sizeof(buffer));
-  sprintf(buffer, "stripe length = %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f", this->stripe_length[0], this->stripe_length[1], this->stripe_length[2], this->stripe_length[3], this->stripe_length[4], this->stripe_length[5], this->stripe_length[6], this->stripe_length[7]);
+  sprintf(buffer, "stripe length = %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f", this->stripe_length[0],
+          this->stripe_length[1], this->stripe_length[2], this->stripe_length[3], this->stripe_length[4],
+          this->stripe_length[5], this->stripe_length[6], this->stripe_length[7]);
   std::cout << buffer << std::endl;
   cv::putText(this->img_origin, buffer,
               cv::Point(this->img_origin.cols / 20, this->img_origin.rows / 15 + 80),
-              cv::FONT_HERSHEY_COMPLEX, 0.7, cv::Scalar(72, 73, 220), 2,
+              cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(72, 73, 220), 2,
               cv::LINE_AA);
 
   cv::imshow("img", this->img_origin);
@@ -341,7 +347,7 @@ bool rcmp(cv::Point2d a, cv::Point2d b) { return a.y < b.y; }
 
 void extractSubPixel(cv::Mat &src, std::vector<cv::Point2d> &subPixel, int threshold, bool IsHorizontal, bool Ascending,
                      int SampleAmount, int kSize) {
-  int h = src.rows, w = src.cols;
+  int h = src.rows, w = src.cols;  // Src is ROI passed in.
   int len = IsHorizontal ? w : h;
   int range = IsHorizontal ? h : w;
   int sampleGap = len / SampleAmount;
@@ -358,8 +364,8 @@ void extractSubPixel(cv::Mat &src, std::vector<cv::Point2d> &subPixel, int thres
 
   Gen_GaussianKernel(GaussianKernel, kSize, 5);
   for (int delta = sampleGap; delta < len; delta += sampleGap) {
-    firstDerivative.clear();
-    for (int i = border; i < -border + range; i++) {
+      firstDerivative.clear();
+      for (int i = border; i < -border + range; i++) {
       double sum = 0.0;
       for (int j = -border; j <= border; j++) {
         if (IsHorizontal) {
@@ -370,7 +376,6 @@ void extractSubPixel(cv::Mat &src, std::vector<cv::Point2d> &subPixel, int thres
                   src.at<uchar>(delta, i + j));
         }
       }
-
       if ((Ascending && sum - threshold > EPS) || !Ascending && -sum - threshold > EPS)
         firstDerivative.emplace_back(cv::Point2d(i, sum));  //结果大于阈值才压入数组
     }
@@ -391,7 +396,7 @@ void extractSubPixel(cv::Mat &src, std::vector<cv::Point2d> &subPixel, int thres
 }
 
 /**
- * @brief 产生高斯核
+ * @brief 使用高斯滤波器的一阶导数产生最优边缘滤波器。
  * @param OutputArray
  * @param kSize
  * @param sigma
@@ -410,7 +415,14 @@ void Gen_GaussianKernel(cv::Mat &OutputArray, int kSize, int sigma) {
   }
 }
 
-
+/**
+ * @brief 拟合抛物线方程，ax^2 + bx + c = y，计算a b c的值
+ * @param vecPoints
+ * @param a
+ * @param b
+ * @param c
+ * @return
+ */
 bool fitParabola(const std::vector<cv::Point2d> &vecPoints, double &a, double &b, double &c) {
   if (vecPoints.size() < 3) return false;
   // 初始化 Mat
@@ -427,7 +439,7 @@ bool fitParabola(const std::vector<cv::Point2d> &vecPoints, double &a, double &b
   for (int i = 0; i < 3; ++i) {
     matB.at<double>(i, 0) = vecPoints[i].y;
   }
-
+  // opencv最小二乘法拟合
   cv::solve(matA, matB, matC, cv::DECOMP_LU);
   // 返回值
   a = matC.at<double>(0, 0);

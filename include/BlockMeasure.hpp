@@ -8,7 +8,7 @@
 #include <cstdio>
 
 #define YStart 273
-#define ROIHORWidth 24
+#define ROIHORWidth 20
 #define ROIHORHeight1 15
 #define ROIHORHeight2 230
 #define ROIVERWidth 24
@@ -17,7 +17,8 @@
 #define GETStripeVER1 15
 #define GETStripeVER2 25
 
-#define Stripe1LUX 275
+// #define Stripe1LUX 275
+#define Stripe1LUX 280
 #define Stripe1L 185
 #define Stripe2LUX 335
 #define Stripe2L 185
