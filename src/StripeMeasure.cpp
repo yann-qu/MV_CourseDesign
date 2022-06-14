@@ -1,102 +1,103 @@
-#include "BlockMeasure.hpp"
+#include "StripeMeasure.hpp"
 
-// 定义ROI 对应八个条纹
-std::vector<std::vector<cv::Point>> ROIdef = {
+// 定义ROI的对角点
+// 一张图有八个条纹，每个条纹有四个ROI，每个ROI用左上和右下两个点指出。
+std::vector<std::vector<cv::Point>> ROIDiagPoints = {
   // 1
   {cv::Point(Stripe1LUX, YStart),
-    cv::Point(Stripe1LUX + ROIHORWidth, YStart + ROIHORHeight1),
+    cv::Point(Stripe1LUX + ROIHorWidth, YStart + ROIHorHeight1),
     cv::Point(Stripe1LUX, YStart + Stripe1L),
-    cv::Point(Stripe1LUX + ROIHORWidth, YStart + Stripe1L + ROIHORHeight2),
+    cv::Point(Stripe1LUX + ROIHorWidth, YStart + Stripe1L + ROIHorHeight2),
 
     cv::Point(Stripe1LUX - GETStripeVER1, YStart + GETStripeVER2),
-    cv::Point(Stripe1LUX - GETStripeVER1 + ROIVERWidth, YStart + ROIVERHeight),
+    cv::Point(Stripe1LUX - GETStripeVER1 + ROIVerWidth, YStart + ROIVerHeight),
     cv::Point(Stripe1LUX + GETStripeVER1, YStart + GETStripeVER2),
-    cv::Point(Stripe1LUX + GETStripeVER1 + ROIVERWidth,
-              YStart + ROIVERHeight)},
+    cv::Point(Stripe1LUX + GETStripeVER1 + ROIVerWidth,
+              YStart + ROIVerHeight)},
   // 2
   {cv::Point(Stripe2LUX, YStart),
-    cv::Point(Stripe2LUX + ROIHORWidth, YStart + ROIHORHeight1),
+    cv::Point(Stripe2LUX + ROIHorWidth, YStart + ROIHorHeight1),
     cv::Point(Stripe2LUX, YStart + Stripe2L),
-    cv::Point(Stripe2LUX + ROIHORWidth, YStart + Stripe2L + ROIHORHeight2),
+    cv::Point(Stripe2LUX + ROIHorWidth, YStart + Stripe2L + ROIHorHeight2),
 
     cv::Point(Stripe2LUX - GETStripeVER1, YStart + GETStripeVER2),
-    cv::Point(Stripe2LUX - GETStripeVER1 + ROIVERWidth, YStart + ROIVERHeight),
+    cv::Point(Stripe2LUX - GETStripeVER1 + ROIVerWidth, YStart + ROIVerHeight),
     cv::Point(Stripe2LUX + GETStripeVER1, YStart + GETStripeVER2),
-    cv::Point(Stripe2LUX + GETStripeVER1 + ROIVERWidth,
-              YStart + ROIVERHeight)},
+    cv::Point(Stripe2LUX + GETStripeVER1 + ROIVerWidth,
+              YStart + ROIVerHeight)},
   // 3
   {cv::Point(Stripe3LUX, YStart),
-    cv::Point(Stripe3LUX + ROIHORWidth, YStart + ROIHORHeight1),
+    cv::Point(Stripe3LUX + ROIHorWidth, YStart + ROIHorHeight1),
     cv::Point(Stripe3LUX, YStart + Stripe3L),
-    cv::Point(Stripe3LUX + ROIHORWidth, YStart + Stripe3L + ROIHORHeight2),
+    cv::Point(Stripe3LUX + ROIHorWidth, YStart + Stripe3L + ROIHorHeight2),
 
     cv::Point(Stripe3LUX - GETStripeVER1, YStart + GETStripeVER2),
-    cv::Point(Stripe3LUX - GETStripeVER1 + ROIVERWidth, YStart + ROIVERHeight),
+    cv::Point(Stripe3LUX - GETStripeVER1 + ROIVerWidth, YStart + ROIVerHeight),
     cv::Point(Stripe3LUX + GETStripeVER1, YStart + GETStripeVER2),
-    cv::Point(Stripe3LUX + GETStripeVER1 + ROIVERWidth,
-              YStart + ROIVERHeight)},
+    cv::Point(Stripe3LUX + GETStripeVER1 + ROIVerWidth,
+              YStart + ROIVerHeight)},
   // 4
   {cv::Point(Stripe4LUX, YStart),
-    cv::Point(Stripe4LUX + ROIHORWidth, YStart + ROIHORHeight1),
+    cv::Point(Stripe4LUX + ROIHorWidth, YStart + ROIHorHeight1),
     cv::Point(Stripe4LUX, YStart + Stripe4L),
-    cv::Point(Stripe4LUX + ROIHORWidth, YStart + Stripe4L + ROIHORHeight2),
+    cv::Point(Stripe4LUX + ROIHorWidth, YStart + Stripe4L + ROIHorHeight2),
 
     cv::Point(Stripe4LUX - GETStripeVER1, YStart + GETStripeVER2),
-    cv::Point(Stripe4LUX - GETStripeVER1 + ROIVERWidth, YStart + ROIVERHeight),
+    cv::Point(Stripe4LUX - GETStripeVER1 + ROIVerWidth, YStart + ROIVerHeight),
     cv::Point(Stripe4LUX + GETStripeVER1, YStart + GETStripeVER2),
-    cv::Point(Stripe4LUX + GETStripeVER1 + ROIVERWidth,
-              YStart + ROIVERHeight)},
+    cv::Point(Stripe4LUX + GETStripeVER1 + ROIVerWidth,
+              YStart + ROIVerHeight)},
   // 5
   {cv::Point(Stripe5LUX, YStart),
-    cv::Point(Stripe5LUX + ROIHORWidth, YStart + ROIHORHeight1),
+    cv::Point(Stripe5LUX + ROIHorWidth, YStart + ROIHorHeight1),
     cv::Point(Stripe5LUX, YStart + Stripe5L),
-    cv::Point(Stripe5LUX + ROIHORWidth, YStart + Stripe5L + ROIHORHeight2),
+    cv::Point(Stripe5LUX + ROIHorWidth, YStart + Stripe5L + ROIHorHeight2),
 
     cv::Point(Stripe5LUX - GETStripeVER1, YStart + GETStripeVER2),
-    cv::Point(Stripe5LUX - GETStripeVER1 + ROIVERWidth, YStart + ROIVERHeight),
+    cv::Point(Stripe5LUX - GETStripeVER1 + ROIVerWidth, YStart + ROIVerHeight),
     cv::Point(Stripe5LUX + GETStripeVER1, YStart + GETStripeVER2),
-    cv::Point(Stripe5LUX + GETStripeVER1 + ROIVERWidth,
-              YStart + ROIVERHeight)},
+    cv::Point(Stripe5LUX + GETStripeVER1 + ROIVerWidth,
+              YStart + ROIVerHeight)},
   // 6
   {cv::Point(Stripe6LUX, YStart),
-    cv::Point(Stripe6LUX + ROIHORWidth, YStart + ROIHORHeight1),
+    cv::Point(Stripe6LUX + ROIHorWidth, YStart + ROIHorHeight1),
     cv::Point(Stripe6LUX, YStart + Stripe6L),
-    cv::Point(Stripe6LUX + ROIHORWidth, YStart + Stripe6L + ROIHORHeight2),
+    cv::Point(Stripe6LUX + ROIHorWidth, YStart + Stripe6L + ROIHorHeight2),
 
     cv::Point(Stripe6LUX - GETStripeVER1, YStart + GETStripeVER2),
-    cv::Point(Stripe6LUX - GETStripeVER1 + ROIVERWidth, YStart + ROIVERHeight),
+    cv::Point(Stripe6LUX - GETStripeVER1 + ROIVerWidth, YStart + ROIVerHeight),
     cv::Point(Stripe6LUX + GETStripeVER1, YStart + GETStripeVER2),
-    cv::Point(Stripe6LUX + GETStripeVER1 + ROIVERWidth,
-              YStart + ROIVERHeight)},
+    cv::Point(Stripe6LUX + GETStripeVER1 + ROIVerWidth,
+              YStart + ROIVerHeight)},
   // 7
   {cv::Point(Stripe7LUX, YStart),
-    cv::Point(Stripe7LUX + ROIHORWidth, YStart + ROIHORHeight1),
+    cv::Point(Stripe7LUX + ROIHorWidth, YStart + ROIHorHeight1),
     cv::Point(Stripe7LUX, YStart + Stripe7L),
-    cv::Point(Stripe7LUX + ROIHORWidth, YStart + Stripe7L + ROIHORHeight2),
+    cv::Point(Stripe7LUX + ROIHorWidth, YStart + Stripe7L + ROIHorHeight2),
 
     cv::Point(Stripe7LUX - GETStripeVER1, YStart + GETStripeVER2),
-    cv::Point(Stripe7LUX - GETStripeVER1 + ROIVERWidth, YStart + ROIVERHeight),
+    cv::Point(Stripe7LUX - GETStripeVER1 + ROIVerWidth, YStart + ROIVerHeight),
     cv::Point(Stripe7LUX + GETStripeVER1, YStart + GETStripeVER2),
-    cv::Point(Stripe7LUX + GETStripeVER1 + ROIVERWidth,
-              YStart + ROIVERHeight)},
+    cv::Point(Stripe7LUX + GETStripeVER1 + ROIVerWidth,
+              YStart + ROIVerHeight)},
   // 8
   {cv::Point(Stripe8LUX, YStart),
-    cv::Point(Stripe8LUX + ROIHORWidth, YStart + ROIHORHeight1),
+    cv::Point(Stripe8LUX + ROIHorWidth, YStart + ROIHorHeight1),
     cv::Point(Stripe8LUX, YStart + Stripe8L),
-    cv::Point(Stripe8LUX + ROIHORWidth, YStart + Stripe8L + ROIHORHeight2),
+    cv::Point(Stripe8LUX + ROIHorWidth, YStart + Stripe8L + ROIHorHeight2),
 
     cv::Point(Stripe8LUX - GETStripeVER1, YStart + GETStripeVER2),
-    cv::Point(Stripe8LUX - GETStripeVER1 + ROIVERWidth, YStart + ROIVERHeight),
+    cv::Point(Stripe8LUX - GETStripeVER1 + ROIVerWidth, YStart + ROIVerHeight),
     cv::Point(Stripe8LUX + GETStripeVER1, YStart + GETStripeVER2),
-    cv::Point(Stripe8LUX + GETStripeVER1 + ROIVERWidth,
-              YStart + ROIVERHeight)},
+    cv::Point(Stripe8LUX + GETStripeVER1 + ROIVerWidth,
+              YStart + ROIVerHeight)},
 };
 
 /**
  * @brief 初始化一个BlockMeasure对象
  * @param img_
  */
-void BlockMeasure::Init(cv::Mat &img_) {
+void StripeMeasure::Init(cv::Mat &img_) {
   this->img_origin = img_;
   this->img = img_.clone();
 }
@@ -104,10 +105,10 @@ void BlockMeasure::Init(cv::Mat &img_) {
 /**
  * @brief 对图片进行旋转矫正
  */
-void BlockMeasure::Rotate() {
+void StripeMeasure::Rotate() {
   cv::Point2d Origin(this->img_origin.cols / 2.0, this->img_origin.rows / 2.0);
-  MyDFT(this->img_origin, this->img_DFT);
-  double angelR = MyRotateAngle(this->img_DFT);
+  DFT(this->img_origin, this->img_DFT);
+  double angelR = RotateAngle(this->img_DFT);
   cv::Mat RotateMat = cv::getRotationMatrix2D(Origin, angelR - 90, 1.0);
   cv::warpAffine(this->img, this->img, RotateMat, this->img.size(),
                  cv::INTER_LINEAR | cv::WARP_FILL_OUTLIERS,
@@ -117,13 +118,11 @@ void BlockMeasure::Rotate() {
 /**
  * @brief 对图片进行滤波处理，降低图片噪声
  */
-void BlockMeasure::Filter() {
+void StripeMeasure::Filter() {
   cv::Mat element = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3));
 
   // 高斯滤波去除高斯噪声
-  // sigmaX和sigmaY为3时方差最小
-  cv::GaussianBlur(this->img, this->img, cv::Size(5, 5), 3, 3);
-
+  cv::GaussianBlur(this->img, this->img, cv::Size(3, 3), 3, 3);
   cv::morphologyEx(this->img, this->img, cv::MORPH_OPEN, element);
 
   for (int i = 0; i < this->img.rows; i++) {
@@ -138,15 +137,13 @@ void BlockMeasure::Filter() {
       }
     }
   }
-  // TODO 对比二值化和多阈值处理
-  // cv::threshold(*(this->pimg), *(this->pimg), 0, 255, cv::THRESH_OTSU);
 }
 
 
 /**
  * @brief 对图片进行亚像素精度的1D测量
  */
-void BlockMeasure::Measure() {
+void StripeMeasure::Measure() {
   int StripeIndex = 0;  // Stripe index, from 0 to 7. There are 8 in total.
   // subPixel是一个存储了4个vector的数组，每个vector分别存储了上下左右四个边的ROI中边缘的坐标
   // PresubPixel记录上个条纹的右侧边缘， 用于计算条纹间隔。
@@ -157,13 +154,13 @@ void BlockMeasure::Measure() {
     for (int k = 0; k < 4; k++) {
       subPixel[k].clear();
       // 把ROI截取出来
-      selectROI(this->img, ROI, ROIdef[StripeIndex][2 * k], ROIdef[StripeIndex][2 * k + 1]);
+      SelectROI(this->img, ROI, ROIDiagPoints[StripeIndex][2 * k], ROIDiagPoints[StripeIndex][2 * k + 1]);
       // 在ROI中进行亚像素级边缘提取
-      extractSubPixel(ROI, subPixel[k], 30, k < 2, !(k & 1), SampleAmount, kSize);
+      ExtractSubPixel(ROI, subPixel[k], 30, k < 2, !(k & 1), SampleAmount, kSize);
       // 将边缘相对于ROI的坐标变换到相对于整幅图的坐标。
       for (int cnt = 0; cnt < subPixel[k].size(); cnt++) {
-        subPixel[k].at(cnt).x += ROIdef[StripeIndex][2 * k].x;
-        subPixel[k].at(cnt).y += ROIdef[StripeIndex][2 * k].y;
+        subPixel[k].at(cnt).x += ROIDiagPoints[StripeIndex][2 * k].x;
+        subPixel[k].at(cnt).y += ROIDiagPoints[StripeIndex][2 * k].y;
       }
     }
     double sum1 = 0.0, sum2 = 0.0, sum3 = 0.0;
@@ -172,10 +169,8 @@ void BlockMeasure::Measure() {
       sum2 += (subPixel[3][i].x - subPixel[2][i].x);
       if (!PresubPixel.empty()) sum3 += (subPixel[2][i].x - PresubPixel[i].x);
     }
-
     this->stripe_length.emplace_back(sum1 / SampleAmount);
     stripes_width.emplace_back(sum2 / SampleAmount);
-
     if (StripeIndex > 0)
       gaps_width.emplace_back(sum3 / SampleAmount);
     PresubPixel.clear();
@@ -195,8 +190,8 @@ void BlockMeasure::Measure() {
 /**
  * @brief 打印结果，显示图片
  */
-void BlockMeasure::Display() {
-  char buffer[64];
+void StripeMeasure::Display() {
+  char buffer[128];
   memset(buffer, 0, sizeof(buffer));
   sprintf(buffer, "stripe width = %.2f, gap width = %.2f, time usage = %.2lfms", this->stripe_width, this->gap_width,
           this->time);
@@ -218,14 +213,21 @@ void BlockMeasure::Display() {
               cv::LINE_AA);
 
   cv::imshow("img", this->img_origin);
-  cv::waitKey(0);
+  cv::waitKey(500);
 }
 
-void BlockMeasure::Process(cv::Mat &img_) {
+/**
+ * @brief 完成整个条纹测量过程并计时
+ * @param img_
+ */
+void StripeMeasure::Process(cv::Mat &img_) {
+  static int idx = 0;
   this->Init(img_);
   int64_t t1 = cv::getTickCount();
   this->Rotate();
-  this->Filter();
+  // TODO 添加一个合适的噪声评估函数。前两张图不滤波效果更好
+  if ((++idx) >= 3)
+    this->Filter();
   this->Measure();
   int64_t t2 = cv::getTickCount();
   this->time = 1.0 * (t2 - t1) * 1000 / cv::getTickFrequency();
@@ -237,7 +239,7 @@ void BlockMeasure::Process(cv::Mat &img_) {
  * @param src
  * @param dst
  */
-void MyDFT(cv::InputArray &src, cv::OutputArray &dst) {
+void DFT(cv::InputArray &src, cv::OutputArray &dst) {
   cv::Size dftSize;
   // calculate the size of DFT transform
   dftSize.width = cv::getOptimalDFTSize(src.cols());
@@ -295,7 +297,7 @@ void MyDFT(cv::InputArray &src, cv::OutputArray &dst) {
  * @param src
  * @return
  */
-double MyRotateAngle(cv::InputArray src) {
+double RotateAngle(cv::InputArray src) {
   cv::Mat frameOrigin, m_frameOrigin, frameGrey, frameThreshold, tmp;
   std::vector<double> lineAngle;
   double Theta = 0, Rho, Angel;
@@ -336,7 +338,7 @@ double MyRotateAngle(cv::InputArray src) {
  * @param leftUpper
  * @param rightLower
  */
-void selectROI(cv::Mat &src, cv::Mat &dst, cv::Point &leftUpper, cv::Point &rightLower) {
+void SelectROI(cv::Mat &src, cv::Mat &dst, cv::Point &leftUpper, cv::Point &rightLower) {
   cv::Rect roi = cv::Rect(leftUpper, rightLower);
   dst = src(roi).clone();
 }
@@ -345,48 +347,59 @@ bool cmp(cv::Point2d a, cv::Point2d b) { return a.y > b.y; }
 
 bool rcmp(cv::Point2d a, cv::Point2d b) { return a.y < b.y; }
 
-void extractSubPixel(cv::Mat &src, std::vector<cv::Point2d> &subPixel, int threshold, bool IsHorizontal, bool Ascending,
-                     int SampleAmount, int kSize) {
-  int h = src.rows, w = src.cols;  // Src is ROI passed in.
-  int len = IsHorizontal ? w : h;
-  int range = IsHorizontal ? h : w;
-  int sampleGap = len / SampleAmount;
+/**
+ * @brief 提取亚像素边缘，存入subPixel。
+ * @param ROI
+ * @param subPixel
+ * @param threshold
+ * @param isHorizontal
+ * @param ascending
+ * @param sampleAmount
+ * @param kSize
+ */
+void ExtractSubPixel(cv::Mat &ROI, std::vector<cv::Point2d> &subPixel, int threshold, bool isHorizontal, bool ascending,
+                     int sampleAmount, int kSize) {
+  int h = ROI.rows, w = ROI.cols;  // Src is ROI passed in.
+  int len = isHorizontal ? w : h;
+  int range = isHorizontal ? h : w;
+  // int sampleGap = len / sampleAmount;
+  int sampleGap = len / (sampleAmount - 1);
   int border = (kSize - 1) / 2;
 
   std::vector<double> test;
   cv::Mat srcGrey;
-  cv::Mat temp = src.clone();
-  if (src.channels() == 3) cv::cvtColor(src, src, cv::COLOR_BGR2GRAY);
+  cv::Mat temp = ROI.clone();
+  if (ROI.channels() == 3) cv::cvtColor(ROI, ROI, cv::COLOR_BGR2GRAY);
   double a, b, c;
   cv::Mat GaussianKernel;
 
   std::vector<cv::Point2d> firstDerivative;
 
-  Gen_GaussianKernel(GaussianKernel, kSize, 5);
-  for (int delta = sampleGap; delta < len; delta += sampleGap) {
-      firstDerivative.clear();
-      for (int i = border; i < -border + range; i++) {
+  GenGaussianKernel(GaussianKernel, kSize, 5);
+  for (int delta = 0; delta < len && subPixel.size() < sampleAmount; delta += sampleGap) {
+    firstDerivative.clear();
+    for (int i = border; i < -border + range; i++) {
       double sum = 0.0;
       for (int j = -border; j <= border; j++) {
-        if (IsHorizontal) {
+        if (isHorizontal) {
           sum += (GaussianKernel.at<double>(0, border + j) *
-                  src.at<uchar>(i + j, delta));
+                  ROI.at<uchar>(i + j, delta));
         } else {
           sum += (GaussianKernel.at<double>(0, border + j) *
-                  src.at<uchar>(delta, i + j));
+                  ROI.at<uchar>(delta, i + j));
         }
       }
-      if ((Ascending && sum - threshold > EPS) || !Ascending && -sum - threshold > EPS)
+      if ((ascending && sum - threshold > EPS) || !ascending && -sum - threshold > EPS)
         firstDerivative.emplace_back(cv::Point2d(i, sum));  //结果大于阈值才压入数组
     }
-    if (Ascending)
+    if (ascending)
       std::sort(firstDerivative.begin(), firstDerivative.end(),
                 cmp);  //对结果进行降序排序， 以便获得三个最大的点。
     else
       std::sort(firstDerivative.begin(), firstDerivative.end(),
                 rcmp);  //对结果进行升序排序， 以便获得三个最小的点。
-    if (fitParabola(firstDerivative, a, b, c)) {
-      if (IsHorizontal)
+    if (FitPara(firstDerivative, a, b, c)) {
+      if (isHorizontal)
         subPixel.emplace_back(
           cv::Point2d(delta, -b / (2 * a)));  // 将亚像素点压入数组
       else
@@ -396,13 +409,13 @@ void extractSubPixel(cv::Mat &src, std::vector<cv::Point2d> &subPixel, int thres
 }
 
 /**
- * @brief 使用高斯滤波器的一阶导数产生最优边缘滤波器。
- * @param OutputArray
+ * @brief 使用高斯滤波器的一阶导数近似产生最优边缘滤波器。
+ * @param outputArray
  * @param kSize
  * @param sigma
  */
-void Gen_GaussianKernel(cv::Mat &OutputArray, int kSize, int sigma) {
-  OutputArray = cv::Mat::zeros(1, kSize, CV_64F);
+void GenGaussianKernel(cv::Mat &outputArray, int kSize, int sigma) {
+  outputArray = cv::Mat::zeros(1, kSize, CV_64F);
   std::vector<double> DataInsight;
 
   int center = (kSize - 1) / 2;
@@ -411,7 +424,7 @@ void Gen_GaussianKernel(cv::Mat &OutputArray, int kSize, int sigma) {
   for (int j = 0; j < kSize; j++) {
     x = pow(j - center, 2);
     z = -(j - center) * exp(-(x) / (2 * sigma * sigma));
-    OutputArray.at<double>(0, j) = z;
+    outputArray.at<double>(0, j) = z;
   }
 }
 
@@ -423,7 +436,7 @@ void Gen_GaussianKernel(cv::Mat &OutputArray, int kSize, int sigma) {
  * @param c
  * @return
  */
-bool fitParabola(const std::vector<cv::Point2d> &vecPoints, double &a, double &b, double &c) {
+bool FitPara(const std::vector<cv::Point2d> &vecPoints, double &a, double &b, double &c) {
   if (vecPoints.size() < 3) return false;
   // 初始化 Mat
   cv::Mat matA(3, 3, CV_64F);
@@ -443,8 +456,8 @@ bool fitParabola(const std::vector<cv::Point2d> &vecPoints, double &a, double &b
   cv::solve(matA, matB, matC, cv::DECOMP_LU);
   // 返回值
   a = matC.at<double>(0, 0);
-  b = matC.at<double>(0, 1);
-  c = matC.at<double>(0, 2);
+  b = matC.at<double>(1, 0);
+  c = matC.at<double>(2, 0);
   return true;
 }
 

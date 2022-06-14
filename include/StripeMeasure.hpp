@@ -8,16 +8,15 @@
 #include <cstdio>
 
 #define YStart 273
-#define ROIHORWidth 20
-#define ROIHORHeight1 15
-#define ROIHORHeight2 230
-#define ROIVERWidth 24
-#define ROIVERHeight 150
+#define ROIHorWidth 20
+#define ROIHorHeight1 15
+#define ROIHorHeight2 230
+#define ROIVerWidth 24
+#define ROIVerHeight 150
 
 #define GETStripeVER1 15
 #define GETStripeVER2 25
 
-// #define Stripe1LUX 275
 #define Stripe1LUX 280
 #define Stripe1L 185
 #define Stripe2LUX 335
@@ -37,24 +36,25 @@
 
 #define EPS 1e-4
 
-extern std::vector<std::vector<cv::Point>> ROIdef;
+extern std::vector<std::vector<cv::Point>> ROIDiagPoints;
 const int SampleAmount = 20;
 const int kSize = 5;
 
-class BlockMeasure {
+class StripeMeasure {
 public:
-  BlockMeasure() = default;
-  BlockMeasure(cv::Mat &img_) : img_origin(img_), img(img_.clone()) {}
+  StripeMeasure() = default;
+  StripeMeasure(cv::Mat &img_) : img_origin(img_), img(img_.clone()) {}
   void Process(cv::Mat &img_);
   void Display();
-  ~BlockMeasure() = default;
+  double get_stripe_width() const { return this->stripe_width; }
+  double get_gap_width() const { return this->gap_width; }
+  ~StripeMeasure() = default;
 
 private:
   void Init(cv::Mat &img_);
   void Filter();
   void Rotate();
   void Measure();
-
   // std::shared_ptr<cv::Mat> pimg;
   // std::shared_ptr<cv::Mat> pimg_origin;
   double time;
@@ -67,9 +67,10 @@ private:
 };
 
 
-void MyDFT(cv::InputArray &src, cv::OutputArray &dst);
-double MyRotateAngle(cv::InputArray src);
-void selectROI(cv::Mat &src, cv::Mat &dst, cv::Point &leftUpper, cv::Point &rightLower);
-void extractSubPixel(cv::Mat &src, std::vector<cv::Point2d> &subPixel, int threshold, bool IsHorizontal = true, bool Ascending = true, int SampleAmount = 20, int kSize = 5);
-void Gen_GaussianKernel(cv::Mat &OutputArray, int kSize, int sigma);
-bool fitParabola(const std::vector<cv::Point2d> &vecPoints, double &a, double &b, double &c);
+void DFT(cv::InputArray &src, cv::OutputArray &dst);
+double RotateAngle(cv::InputArray src);
+void SelectROI(cv::Mat &src, cv::Mat &dst, cv::Point &leftUpper, cv::Point &rightLower);
+void ExtractSubPixel(cv::Mat &ROI, std::vector<cv::Point2d> &subPixel, int threshold, bool isHorizontal = true,
+                     bool ascending = true, int sampleAmount = 20, int kSize = 5);
+void GenGaussianKernel(cv::Mat &outputArray, int kSize, int sigma);
+bool FitPara(const std::vector<cv::Point2d> &vecPoints, double &a, double &b, double &c);

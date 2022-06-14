@@ -1,3 +1,4 @@
+%% 测试频域滤波的效果
 clc, clear, close all;
 % A = imread('../resource/xx-grating_002_0.bmp');
 A = imread('../resource/noised_0.5.bmp');

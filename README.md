@@ -26,7 +26,7 @@
 
 ### 2.2 将倾斜的图片旋转矫正
 
-> 原理：在二维傅里叶变换中，空间域中横向的周期变化会反应在频谱图中的横轴上，而空间域中纵向的周期变化会反应在频谱图中的纵轴上。
+> 原理：在二维傅里叶变换中，空间域中横向的周期变化会反应在频谱图中的横轴上，而空间域中纵向的周期变化会反应在频谱图中的纵轴上。[Reference: OpenCV Discrete Fourier Transform](https://docs.opencv.org/4.6.0/d8/d01/tutorial_discrete_fourier_transform.html)
 
 1. 用DFT变换将图片变换到频域
 
