@@ -225,7 +225,6 @@ void StripeMeasure::Process(cv::Mat &img_) {
   this->Init(img_);
   int64_t t1 = cv::getTickCount();
   this->Rotate();
-  // TODO 添加一个合适的噪声评估函数。前两张图不滤波效果更好
   if ((++idx) >= 3)
     this->Filter();
   this->Measure();
@@ -261,7 +260,6 @@ void DFT(cv::InputArray &src, cv::OutputArray &dst) {
   FourierFrame += cv::Scalar::all(1);  // switch to logarithmic scale
   //计算幅值，转换到对数尺度(logarithmic scale)
   cv::log(FourierFrame, FourierFrame);  //转换到对数尺度(logarithmic scale)
-
   //如果有奇数行或列，则对频谱进行裁剪
   FourierFrame = FourierFrame(
     cv::Rect(0, 0, FourierFrame.cols & -2, FourierFrame.rows & -2));
