@@ -212,8 +212,12 @@ void StripeMeasure::Display() {
               cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(72, 73, 220), 2,
               cv::LINE_AA);
 
+  // 将图片显示出来
   cv::imshow("img", this->img_origin);
   cv::waitKey(500);
+  // 将输出图片写入磁盘
+  // static int filename_idx = 0;
+  // cv::imwrite("../output/" + std::to_string(++filename_idx) + ".png", this->img_origin);
 }
 
 /**
@@ -308,8 +312,6 @@ double RotateAngle(cv::InputArray src) {
   std::vector<cv::Vec2f> lines;
   cv::HoughLines(frameThreshold, lines, 1, CV_PI / 180, 20, 10, 10, 1.4,
                  CV_PI / 2);  // runs the actual detection
-  // todo 后面可以换成HoughLineP， 据说速度更快
-
   Rho = lines[0][0], Theta = lines[0][1];
 
   cv::Point pt1, pt2;
