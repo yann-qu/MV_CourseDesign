@@ -63,3 +63,13 @@
 1. 对测量结果进行可视化
 
 2. 计算方差、平均值等
+
+## 3 运行结果
+
+### 3.1 控制台输出
+
+![img](img/c5110d935b9258f6d40a1646f838bfcfb1e34d50.png)
+
+### 3.2 测量误差
+
+<img src="img/88e045641e0eeafcb1d608be2bf82146cdad711b.png" title="" alt="" width="414">
